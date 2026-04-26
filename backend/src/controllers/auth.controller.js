@@ -17,98 +17,135 @@ export async function register(req,res){
     const user = await userModel.create({
         username,email,password
     });
+    const emailVerificationToken = jwt.sign({
+      email : user.email,
 
+    },process.env.JWT_SECRET);
 
     await sendEmail({
       to: email,
-      subject: "Welcome to Perpexility",
-      html: `
-<!DOCTYPE html>
-<html>
+      subject: "Verify Your Email - Perpexility",
+      html: `<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Welcome to Perpexility</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Verification</title>
 </head>
 
-<body style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, sans-serif;">
+<body style="margin:0; padding:0; background-color:#f4f7fb; font-family: Arial, sans-serif;">
 
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; padding:20px;">
+  <!-- Wrapper -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="padding:20px; background-color:#f4f7fb;">
     <tr>
       <td align="center">
 
         <!-- Main Container -->
-        <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
+        <table width="600" cellpadding="0" cellspacing="0" border="0"
+          style="background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 8px 20px rgba(0,0,0,0.05);">
 
           <!-- Header -->
           <tr>
-            <td style="background:linear-gradient(90deg, #4f46e5, #6366f1); padding:20px; text-align:center; color:white;">
-              <h1 style="margin:0; font-size:24px;">🚀 Perpexility AI</h1>
-              <p style="margin:5px 0 0; font-size:14px;">Your Smart AI Chat Companion</p>
+            <td align="center"
+              style="background: linear-gradient(135deg, #4f46e5, #9333ea); padding:30px; color:#ffffff;">
+              
+              <h1 style="margin:0; font-size:28px; letter-spacing:1px;">
+                Perpexility
+              </h1>
+
+              <p style="margin-top:8px; font-size:14px; opacity:0.9;">
+                Your AI-powered experience starts here
+              </p>
+
             </td>
           </tr>
 
-          <!-- Content -->
+          <!-- Body -->
           <tr>
-            <td style="padding:30px; color:#333;">
-              <h2 style="margin-top:0;">Welcome, ${username}! 👋</h2>
-              
-              <p>
-                We're excited to have you on board with <strong>Perpexility</strong> — your intelligent AI chatbot 
-                designed to assist, guide, and empower your daily tasks.
+            <td style="padding:30px; color:#333333;">
+
+              <h2 style="margin-top:0; font-size:22px;">
+                Hi ${user.username}, 👋
+              </h2>
+
+              <p style="font-size:15px; line-height:1.6;">
+                Thank you for registering on <strong>Perpexility</strong>. We're excited to have you onboard!
               </p>
 
-              <p>
-                Whether you want help with coding, content creation, problem-solving, or just exploring ideas, 
-                our AI is here for you 24/7.
+              <p style="font-size:15px; line-height:1.6;">
+                Please confirm your email address to activate your account by clicking the button below:
               </p>
-
-              <ul style="padding-left:20px;">
-                <li>💡 Instant answers & smart suggestions</li>
-                <li>⚡ Fast and interactive conversations</li>
-                <li>🧠 Built to boost your productivity</li>
-              </ul>
 
               <!-- CTA Button -->
-              <div style="text-align:center; margin:30px 0;">
-                <a href="#" style="background:#4f46e5; color:white; padding:12px 25px; text-decoration:none; border-radius:6px; font-weight:bold;">
-                  Start Chatting 🚀
-                </a>
-              </div>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:30px 0;">
+                <tr>
+                  <td align="center">
+                    <a href="http://localhost:3000/api/auth/verify-email?token=${emailVerificationToken}"
+                      style="background: linear-gradient(135deg, #4f46e5, #9333ea); 
+                             color:#ffffff; 
+                             text-decoration:none; 
+                             padding:14px 28px; 
+                             font-size:16px; 
+                             border-radius:8px; 
+                             display:inline-block;">
+                      Verify Email
+                    </a>
+                  </td>
+                </tr>
+              </table>
 
-              <p>
-                If you have any questions, feel free to reach out. We're here to help!
+              <p style="font-size:14px; color:#666;">
+                If the button doesn't work, copy and paste this link into your browser:
               </p>
 
-              <p>
-                Best regards,<br/>
+              <p style="font-size:13px; color:#4f46e5; word-break:break-all;">
+                http://localhost:3000/api/auth/verify-email?token=${emailVerificationToken}
+              </p>
+
+              <p style="font-size:14px; color:#666; margin-top:20px;">
+                If you did not register on Perpexility, please ignore this email.
+              </p>
+
+              <p style="margin-top:30px; font-size:14px;">
+                Best regards,<br />
                 <strong>The Perpexility Team</strong>
               </p>
+
             </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td style="height:1px; background:#eeeeee;"></td>
           </tr>
 
           <!-- Footer -->
           <tr>
-            <td style="background:#f9fafb; padding:20px; text-align:center; font-size:12px; color:#777;">
-              <p style="margin:0;">© ${new Date().getFullYear()} Perpexility. All rights reserved.</p>
-              <p style="margin:5px 0;">
-                Follow us:
-                <a href="#" style="color:#4f46e5; text-decoration:none;">Twitter</a> |
-                <a href="#" style="color:#4f46e5; text-decoration:none;">LinkedIn</a>
+            <td align="center"
+              style="padding:20px; font-size:12px; color:#888888; background:#f9fafb;">
+
+              <p style="margin:0;">
+                © 2026 Perpexility. All rights reserved.
               </p>
-              <p style="margin:5px 0;">You received this email because you signed up for Perpexility.</p>
+
+              <p style="margin:6px 0 0;">
+                Made with ❤️ for smarter conversations
+              </p>
+
             </td>
           </tr>
 
         </table>
+
+        <!-- Bottom Space -->
+        <div style="height:20px;"></div>
 
       </td>
     </tr>
   </table>
 
 </body>
-</html>
-`,
+</html>`,
     });
     res.status(201).json({
         message : "User created successfully",
@@ -119,4 +156,21 @@ export async function register(req,res){
             email : user.email
         }
     })
+};
+
+export async function verifyEmail(req,res){
+  const {token} = req.query;
+  const decoded = jwt.verify(token,process.env.JWT_SECRET);
+  const user = await userModel.findOne({email : decoded.email});
+  if(!user){
+    return res.status(400).json({
+      message : "Invalid token",
+      success : false,
+      err : "User not found"
+    })
+  };
+  user.verified = true;
+  await user.save();
+  const html = `<h1>Email Verified</h1><p>Hii ${user.username},</p><p>Your email has been successfully verified. You can now log in to your account.</p><p>Best regards,<br/>The Perpexility Team</p>`;
+  res.send(html);
 }
