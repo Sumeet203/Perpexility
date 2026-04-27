@@ -7,7 +7,6 @@ const PORT = Number.parseInt(process.env.PORT, 10) || 3000;
 async function startServer() {
     try {
         await connectDB();
-
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
