@@ -9,4 +9,4 @@ export async function testAi(){
   model.invoke("What is AI? in 100 words ").then((response) => {
     console.log(response.text);
   })
-}
+};

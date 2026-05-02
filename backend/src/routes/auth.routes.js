@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import { loginValidator, registerValidator } from '../validators/auth.validator.js';
-import { getMe, login, register, verifyEmail } from '../controllers/auth.controller.js';
+import { getMe, login, register, resendEmailVerificationLink, verifyEmail } from '../controllers/auth.controller.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const authRouter = Router();
@@ -34,4 +34,11 @@ authRouter.get("/get-me",authMiddleware,getMe);
  * @query { token }
  */
 authRouter.get("/verify-email",verifyEmail);
+
+/**
+ * @route GET /api/auth/resend-verification-email
+ * @desc Resend verification email to user
+ * @access Public
+ */
+authRouter.get("/resend-verification-email",authMiddleware,resendEmailVerificationLink);
 export default authRouter;
