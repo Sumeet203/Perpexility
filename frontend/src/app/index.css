@@ -1,0 +1,17 @@
+@import "tailwindcss" source("../");
+
+@keyframes auth-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.auth-page-in {
+  animation: auth-page-in 220ms ease-out;
+}
