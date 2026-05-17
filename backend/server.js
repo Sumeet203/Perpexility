@@ -3,11 +3,16 @@ import app from "./src/app.js";
 import connectDB from "./src/config/database.js";
 import { testAi } from './src/services/ai.service.js';
 const PORT = Number.parseInt(process.env.PORT, 10) || 3000;
+import http from 'http';
+import { initSocket } from './src/sockets/server.socket.js';
 // testAi();
+
+const httpServer = http.createServer(app);
+initSocket(httpServer);
 async function startServer() {
     try {
         await connectDB();
-        app.listen(PORT, () => {
+        httpServer.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
     } catch (err) {
